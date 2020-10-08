@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/mnt/c/Users/micha/OneDrive/Documents/Arduino/libraries",
+                "/mnt/c/Users/micha/OneDrive/Documents/Arduino/libraries/WiFiNINA/src",
+                "/mnt/c/Users/micha/OneDrive/Documents/Arduino/libraries/WiFiNINA/src"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu18",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
