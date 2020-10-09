@@ -3,11 +3,12 @@
 #include <SPI.h>
 #include <WiFiNINA.h>
 #include "logger.h"
-#include <ArduinoHttpClient.h>
+#include <Arduino.h>
 
 ContextSettings *contextSettings = nullptr;
 Context *context = nullptr;
-char serverAddress[] = "uq48mkovcb.execute-api.us-west-2.amazonaws.com";
+char SERVER_ADDRESS[] = "uq48mkovcb.execute-api.us-west-2.amazonaws.com";
+const int SERVER_PORT = 443;
 // IPAddress server(192, 168, 86, 35);
 
 // static
@@ -31,7 +32,7 @@ Context *Context::getContext()
     return context;
 }
 
-Context::Context(const ContextSettings &settings) : wifiManager_(settings.ssid, settings.password)
+Context::Context(const ContextSettings &settings) : wifiManager_(settings.ssid, settings.password), smartScale_(wifiManager_, SERVER_ADDRESS, SERVER_PORT)
 {
     Logger::info("[Context::Context]:CreatedContext!");
 }
@@ -39,22 +40,20 @@ Context::Context(const ContextSettings &settings) : wifiManager_(settings.ssid, 
 void Context::setup()
 {
     //Initialize serial and wait for port to open:
+    pinMode(10, OUTPUT);
     Serial.begin(9600);
     Logger::info("[Context::setup]: Hello Board!");
-    while (!Serial)
-    {
-        ; // wait for serial port to connect. Needed for native USB port only
-    }
-    scale_.prepare();
+    smartScale_.prepare();
 }
 
 void Context::executeLoop()
 {
 
     Logger::info("[executeLoop] Starts");
-    const auto weight = scale_.read();
-    Logger::info("weight = %f", weight);
-    delay(2 * 1000);
+    smartScale_.loop();
+    // const auto weight = scale_.read();
+    // Logger::info("weight = %f", weight);
+    // delay(2 * 1000);
 
     // wifiManager_.connect();
     // wifiManager_.printWiFiStatus();

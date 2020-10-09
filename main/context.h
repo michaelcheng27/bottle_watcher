@@ -1,6 +1,6 @@
 #pragma once
 #include "wifi_manager.h"
-#include "scale.h"
+#include "smart_scale.h"
 
 struct ContextSettings
 {
@@ -20,5 +20,5 @@ struct Context
 
     //  data member:
     WifiManager wifiManager_;
-    Scale scale_;
+    SmartScale smartScale_;
 };
