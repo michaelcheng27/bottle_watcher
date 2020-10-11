@@ -6,6 +6,7 @@ void setup()
   Serial.begin(9600);
   Serial.println("[setup]: Hello Board!");
   const auto context = Context::getContext();
+
   if (!context)
   {
     Serial.print("Failed to create Context, abort!");

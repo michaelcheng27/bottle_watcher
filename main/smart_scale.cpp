@@ -3,7 +3,7 @@
 #include <SPI.h>
 #include <math.h>
 
-SmartScale::SmartScale(WifiManager &wifiManager, const char *serverAddress, const int port) : wifiManager_(wifiManager), httpClient_(wifi_, serverAddress, port)
+SmartScale::SmartScale(WifiManager &wifiManager, const char *serverAddress, const int port) : wifiManager_(wifiManager), httpClient_(wifi_, serverAddress, port), lcd_(12, 11, 2, 3, 4, 5)
 {
     accumulatedCount_ = 0;
     delta_ = 2.0;
@@ -12,12 +12,13 @@ SmartScale::SmartScale(WifiManager &wifiManager, const char *serverAddress, cons
 void SmartScale::prepare()
 {
     scale_.prepare();
+    lcd_.begin(16, 2);
 }
 
 void SmartScale::loop()
 {
     const auto weight = scale_.read();
-    Logger::info("weight = %f", weight);
+    Logger::info("weight = %f g", weight);
     if (shouldUpdate_(weight))
     {
         blink_();
@@ -36,17 +37,27 @@ void SmartScale::blink_()
     for (int i = 0; i < 5; i++)
     {
         state = state == LOW ? HIGH : LOW;
-        digitalWrite(10, state);
+        digitalWrite(LED_PIN, state);
         delay(500);
     }
 }
 
 bool SmartScale::shouldUpdate_(const double weight)
 {
-    if (isEqual_(weight, 0))
+    if (weight <= 75)
     {
+
+        lcd_.noDisplay();
+        lcd_.clear();
+        if (isEqual_(previousValue_, weight))
+        {
+            lcd_.noDisplay();
+            digitalWrite(LED_BACKLIGHT_PIN, LOW);
+        }
+
         accumulatedCount_ = 0;
-        digitalWrite(10, LOW);
+        previousValue_ = weight;
+        digitalWrite(LED_PIN, LOW);
         return false;
     }
     if (isEqual_(weight, previousValue_))
@@ -58,6 +69,12 @@ bool SmartScale::shouldUpdate_(const double weight)
         previousValue_ = weight;
         accumulatedCount_ = 1;
     }
+    lcd_.clear();
+    char weightStr[16];
+    snprintf(weightStr, 16, "milk: %.2f ml", weight - 105);
+    lcd_.print(weightStr);
+    lcd_.display();
+    digitalWrite(LED_BACKLIGHT_PIN, HIGH);
     if (accumulatedCount_ == 3)
     {
         return true;
@@ -72,7 +89,7 @@ void SmartScale::postUpdate_(const double weight)
 
     String contentType = "application/x-www-form-urlencoded";
     char postData[100];
-    const auto len = snprintf(postData, 100, "{\r\n    \"weight\" : \"%f\"\r\n}", weight);
+    const auto len = snprintf(postData, 100, "{\r\n    \"weight\" : \"%.2f\"\r\n}", weight);
     Logger::info("post data write length = %ld", len);
     postData[len] = '\0';
 

@@ -40,7 +40,8 @@ Context::Context(const ContextSettings &settings) : wifiManager_(settings.ssid, 
 void Context::setup()
 {
     //Initialize serial and wait for port to open:
-    pinMode(10, OUTPUT);
+    pinMode(LED_PIN, OUTPUT);
+    pinMode(LED_BACKLIGHT_PIN, OUTPUT);
     Serial.begin(9600);
     Logger::info("[Context::setup]: Hello Board!");
     smartScale_.prepare();

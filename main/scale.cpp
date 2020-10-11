@@ -1,8 +1,8 @@
 #include "scale.h"
 #include "logger.h"
 
-const int LOADCELL_DOUT_PIN = 2;
-const int LOADCELL_SCK_PIN = 3;
+const int LOADCELL_DOUT_PIN = 15;
+const int LOADCELL_SCK_PIN = 14;
 
 Scale::Scale()
 {
