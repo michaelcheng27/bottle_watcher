@@ -7,7 +7,7 @@
 
 ContextSettings *contextSettings = nullptr;
 Context *context = nullptr;
-char SERVER_ADDRESS[] = "uq48mkovcb.execute-api.us-west-2.amazonaws.com";
+char SERVER_ADDRESS[] = "q3ffb5tzmg.execute-api.us-west-2.amazonaws.com";
 const int SERVER_PORT = 443;
 // IPAddress server(192, 168, 86, 35);
 
